@@ -33,7 +33,7 @@ plugin_url = "https://github.com/richjoyce/OctoPrint-Slack"
 plugin_license = "MIT"
 
 # Any additional requirements besides OctoPrint should be listed here
-plugin_requires = ['pyslack-real']
+plugin_requires = ['requests']
 
 # Additional package data to install for this plugin. The subfolders "templates", "static" and "translations" will
 # already be installed automatically if they exist.

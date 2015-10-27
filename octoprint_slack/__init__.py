@@ -110,3 +110,5 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
 
         self._logger.info("Posted event to Slack!")
 
+__plugin_name__ = "Slack"
+__plugin_implementation__ = SlackPlugin()
