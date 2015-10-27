@@ -6,6 +6,7 @@ import json
 import requests
 
 class SlackPlugin(octoprint.plugin.SettingsPlugin,
+                  octoprint.plugin.TemplatePlugin,
                   octoprint.plugin.EventHandlerPlugin):
 
     ## SettingsPlugin
@@ -26,6 +27,10 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
 
     def get_settings_version(self):
         return 1
+
+    ## TemplatePlugin
+    def get_template_configs(self):
+        return [dict(type="settings", name="Slack", custom_bindings=False)]
 
     ## EventPlugin
 
