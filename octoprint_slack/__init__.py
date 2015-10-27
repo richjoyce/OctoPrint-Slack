@@ -2,6 +2,8 @@
 from __future__ import absolute_import
 
 import octoprint.plugin
+import json
+import requests
 
 class SlackPlugin(octoprint.plugin.EventHandlerPlugin):
 
@@ -59,4 +61,14 @@ class SlackPlugin(octoprint.plugin.EventHandlerPlugin):
             attachment['fallback'] = "Print resumed! Filename: {}".format(filename)
             attachment['text'] = "Print resumed!"
             attachment['color'] = "good"
+        else:
+            return
+
+        try:
+            res = requests.post(webhook_url, data=json.dumps(message))
+        except Exception, e:
+            sys.stderr.write("An error occurred connecting to Slack:\n {}".format(e.message))
+
+        if not res.ok:
+            sys.stderr.write("An error occurred posting to Slack:\n {}".format(res.text))
 
