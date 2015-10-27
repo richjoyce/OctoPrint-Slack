@@ -1,0 +1,72 @@
+<h3>{{ _('Slack Webhook Configuration') }}</h3>
+
+<form class="form-horizontal">
+
+    <div class="control-group">
+        <div class="controls" title="{{ _('You can toggle whether notifications are enabled while a print is in progress.') }}">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.slack.enabled" /> {{ _('Enabled') }}
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group" title="{{ _('Your Slack Webhook URL.') }}">
+        <label class="control-label">{{ _('Webhook URL') }}</label>
+        <div class="controls">
+            <input type="text" class="input-block-level" data-bind="value: settings.plugins.slack.webhook_url">
+        </div>
+    </div>
+    
+    <h4>{{ _('Event Notifications') }}</h4>
+    
+    <p>{{ _('Choose the events that send a message to Slack.') }}</p>
+
+    <div class="control-group">
+        <div class="controls" title="{{ _('A print has started.') }}">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.slack.events.PrintStarted" /> {{ _('PrintStarted') }}
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls" title="{{ _('A print failed.') }}">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.slack.events.PrintFailed" /> {{ _('PrintFailed') }}
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls" title="{{ _('A print completed successfully.') }}">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.slack.events.PrintDone" /> {{ _('PrintDone') }}
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls" title="{{ _('The print has been cancelled via the cancel button.') }}">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.slack.events.PrintCancelled" /> {{ _('PrintCancelled') }}
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls" title="{{ _('The print has been paused.') }}">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.slack.events.PrintPaused" /> {{ _('PrintPaused') }}
+            </label>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls" title="{{ _('The print has been resumed.') }}">
+            <label class="checkbox">
+                <input type="checkbox" data-bind="checked: settings.plugins.slack.events.PrintResumed" /> {{ _('PrintResumed') }}
+            </label>
+        </div>
+    </div>
+
+</form>

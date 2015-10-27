@@ -17,11 +17,11 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
                 webhook_url="",
                 events=dict(
                     PrintStarted=True,
-                    PrintDone=True,
                     PrintFailed=True,
+                    PrintCancelled=True,
+                    PrintDone=True,
                     PrintPaused=False,
                     PrintResumed=False,
-                    PrintCancelled=True
                 )
             )
 
