@@ -5,14 +5,43 @@ import octoprint.plugin
 import json
 import requests
 
-class SlackPlugin(octoprint.plugin.EventHandlerPlugin):
+class SlackPlugin(octoprint.plugin.SettingsPlugin,
+                  octoprint.plugin.EventHandlerPlugin):
+
+    ## SettingsPlugin
+
+    def get_settings_defaults(self):
+        return dict(
+                enabled=False,
+                webhook_url="",
+                events=dict(
+                    PrintStarted=True,
+                    PrintDone=True,
+                    PrintFailed=True,
+                    PrintPaused=False,
+                    PrintResumed=False,
+                    PrintCancelled=True
+                )
+            )
+
+    def get_settings_version(self):
+        return 1
+
+    ## EventPlugin
 
     def on_event(self, event, payload):
         if not self._settings.get(['enabled']):
             return
 
-        if not event.startswith("Print"):
+        enabled_events = self._settings.get(['events'])
+        if event in enabled_events and enabled_events[event]:
+            pass
+        else:
             return
+
+        webhook_url = self._settings.get(['webhook_url'])
+        if webhook_url = "":
+            self._logger.exception("Slack Webhook URL not set!")
 
         filename = os.path.basename(payload["file"])
         if payload['origin'] == 'local':
@@ -67,8 +96,12 @@ class SlackPlugin(octoprint.plugin.EventHandlerPlugin):
         try:
             res = requests.post(webhook_url, data=json.dumps(message))
         except Exception, e:
-            sys.stderr.write("An error occurred connecting to Slack:\n {}".format(e.message))
+            self._logger.exception("An error occurred connecting to Slack:\n {}".format(e.message))
+            return
 
         if not res.ok:
-            sys.stderr.write("An error occurred posting to Slack:\n {}".format(res.text))
+            self._logger.exception("An error occurred posting to Slack:\n {}".format(res.text))
+            return
+
+        self._logger.info("Posted event to Slack!")
 
