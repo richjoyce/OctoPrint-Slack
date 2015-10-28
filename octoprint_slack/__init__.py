@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import octoprint.plugin
+import os
 import json
 import requests
 
@@ -45,7 +46,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             return
 
         webhook_url = self._settings.get(['webhook_url'])
-        if webhook_url = "":
+        if webhook_url == "":
             self._logger.exception("Slack Webhook URL not set!")
 
         filename = os.path.basename(payload["file"])
@@ -67,37 +68,38 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
 
         if event == "PrintStarted":
             attachment['fallback'] = "Print started! Filename: {}".format(filename)
-            attachment['text'] = "Print started!"
+            attachment['pretext'] = "A new print has started! :muscle:"
             attachment['color'] = "good"
         elif event == "PrintFailed":
             attachment['fallback'] = "Print failed! Filename: {}".format(filename)
-            attachment['text'] = "Print failed!"
+            attachment['pretext'] = "Oh no! The print has failed... :rage2:"
             attachment['color'] = "danger"
         elif event == "PrintDone":
-            attachment['fallback'] = "Print finished successfully! Filename: {}".format(filename)
-            attachment['text'] = "Print finished!"
-            attachment['color'] = "good"
-
             import datetime
             import octoprint.util
             elapsed_time = octoprint.util.get_formatted_timedelta(datetime.timedelta(seconds=payload["time"]))
 
+            attachment['fallback'] = "Print finished successfully! Filename: {}, Time: {}".format(filename, elapsed_time)
+            attachment['pretext'] = "The print has finished successfully! :thumbsup:"
+            attachment['color'] = "good"
             attachment['fields'].append( { "title": "Time", "value": elapsed_time, "short": True } )
         elif event == "PrintCancelled":
             attachment['fallback'] = "Print cancelled! Filename: {}".format(filename)
-            attachment['text'] = "Print cancelled!"
+            attachment['pretext'] = "Uh oh... someone cancelled the print! :cryingcat:"
             attachment['color'] = "danger"
         elif event == "PrintPaused":
             attachment['fallback'] = "Print paused... Filename: {}".format(filename)
-            attachment['text'] = "Print paused..."
+            attachment['pretext'] = "Printing has been paused... :sleeping:"
             attachment['color'] = "warning"
         elif event == "PrintResumed":
             attachment['fallback'] = "Print resumed! Filename: {}".format(filename)
-            attachment['text'] = "Print resumed!"
+            attachment['pretext'] = "Phew! Printing has been resumed! Back to work... :hammer:"
             attachment['color'] = "good"
         else:
             return
 
+        self._logger.info("Attempting post of {}".format(message))
+        self._logger.info("Attempting post of {}".format(json.dumps(message)))
         try:
             res = requests.post(webhook_url, data=json.dumps(message))
         except Exception, e:
