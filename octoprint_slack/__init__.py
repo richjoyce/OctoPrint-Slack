@@ -14,7 +14,6 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
 
     def get_settings_defaults(self):
         return dict(
-                enabled=False,
                 webhook_url="",
                 events=dict(
                     PrintStarted=True,
@@ -30,24 +29,24 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
         return 1
 
     ## TemplatePlugin
+
     def get_template_configs(self):
         return [dict(type="settings", name="Slack", custom_bindings=False)]
 
     ## EventPlugin
 
     def on_event(self, event, payload):
-        if not self._settings.get(['enabled']):
-            return
-
         enabled_events = self._settings.get(['events'])
         if event in enabled_events and enabled_events[event]:
             pass
         else:
+            self._logger.debug("Slack not configured for event.")
             return
 
         webhook_url = self._settings.get(['webhook_url'])
         if webhook_url == "":
             self._logger.exception("Slack Webhook URL not set!")
+            return
 
         filename = os.path.basename(payload["file"])
         if payload['origin'] == 'local':
@@ -98,8 +97,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
         else:
             return
 
-        self._logger.info("Attempting post of {}".format(message))
-        self._logger.info("Attempting post of {}".format(json.dumps(message)))
+        self._logger.debug("Attempting post of Slack message: {}".format(message))
         try:
             res = requests.post(webhook_url, data=json.dumps(message))
         except Exception, e:
@@ -110,7 +108,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             self._logger.exception("An error occurred posting to Slack:\n {}".format(res.text))
             return
 
-        self._logger.info("Posted event to Slack!")
+        self._logger.debug("Posted event successfully to Slack!")
 
 __plugin_name__ = "Slack"
 __plugin_implementation__ = SlackPlugin()
