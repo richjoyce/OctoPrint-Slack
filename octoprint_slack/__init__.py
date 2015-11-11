@@ -56,9 +56,19 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
         else:
             origin = payload['origin']
 
+        username = self._settings.get(['username'])
+        if username == "":
+            self._logger.exception("Webhook Username not set!")
+            return
+
+        icon = self._settings.get(['icon'])
+        if icon == "":
+            self._logger.exception("Webhook Icon not set!")
+            return
+
         message = {}
-        message['username'] = "OctoPrint"
-        message['icon_url'] = "http://octoprint.org/assets/img/logo.png"
+        message['username'] = username
+        message['icon_url'] = icon
         message['attachments'] = [{}]
         attachment = message['attachments'][0]
         attachment['fields'] = []
@@ -84,7 +94,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             attachment['fields'].append( { "title": "Time", "value": elapsed_time, "short": True } )
         elif event == "PrintCancelled":
             attachment['fallback'] = "Print cancelled! Filename: {}".format(filename)
-            attachment['pretext'] = "Uh oh... someone cancelled the print! :cryingcat:"
+            attachment['pretext'] = "Uh oh... someone cancelled the print! :crying_cat_face:"
             attachment['color'] = "danger"
         elif event == "PrintPaused":
             attachment['fallback'] = "Print paused... Filename: {}".format(filename)
