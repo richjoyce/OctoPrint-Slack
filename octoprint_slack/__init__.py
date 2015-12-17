@@ -19,37 +19,37 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
                     PrintStarted=dict(
                         Enabled=True,
                         Message="A new print has started! :muscle:",
-                        Fallback="Print started! Filename: {}",
+                        Fallback="Print started! Filename: {filename}",
                         Color="good",
                         ),
                     PrintFailed=dict(
                         Enabled=True,
                         Message="Oh no! The print has failed... :rage2:",
-                        Fallback="Print failed! Filename: {}",
+                        Fallback="Print failed! Filename: {filename}",
                         Color="danger",
                         ),
                     PrintCancelled=dict(
                         Enabled=True,
                         Message="Uh oh... someone cancelled the print! :crying_cat_face:",
-                        Fallback="Print cancelled! Filename: {}",
+                        Fallback="Print cancelled! Filename: {filename}",
                         Color="danger",
                         ),
                     PrintDone=dict(
                         Enabled=True,
-                        Message="Print finished successfully! Filename: {}, Time: {}",
-                        Fallback="Print started! Filename: {}",
+                        Message="Print finished successfully! :thumbsup:",
+                        Fallback="Print started! Filename: {filename}, Time: {time}",
                         Color="good",
                         ),
                     PrintPaused=dict(
                         Enabled=True,
                         Message="Printing has been paused... :sleeping:",
-                        Fallback="Print paused... Filename: {}",
+                        Fallback="Print paused... Filename: {filename}",
                         Color="warning",
                         ),
                     PrintResumed=dict(
                         Enabled=True,
                         Message="Phew! Printing has been resumed! Back to work... :hammer:",
-                        Fallback="Print resumed! Filename: {}",
+                        Fallback="Print resumed! Filename: {filename}",
                         Color="good",
                         ),
                     ),
@@ -122,7 +122,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             else:
                 elapsed_time = ""
 
-            attachment['fallback'] = event_merged['Fallback'].format(filename, elapsed_time)
+            attachment['fallback'] = event_merged['Fallback'].format({'filename': filename, 'time':elapsed_time})
             attachment['pretext'] = event_merged['Message']
             attachment['color'] = event_merged['Color']
 
