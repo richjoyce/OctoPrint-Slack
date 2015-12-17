@@ -56,7 +56,24 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
                 )
 
     def get_settings_version(self):
-        return 1
+        return 2
+
+    def on_settings_migrate(self, target, current):
+        defaults = self.get_settings_defaults()
+        if current is None or current == 1:
+            events = self._settings.get(['events'])
+            # migrate events
+            print_events = self._settings.get(['print_events'])
+            if events:
+                for event in events:
+                    if not events[event]:
+                        self._settings.set_boolean(['print_events',event,'Enabled'], False)
+            # remove old settings if there
+            self._settings.set(['enabled'], None)
+            self._settings.set(['events'], None)
+            # clean up old fallback messages from <1.2.7 oversaving
+            for event in print_events:
+                self._settings.set(['print_events',event,'Fallback'], None)
 
     ## TemplatePlugin
 
