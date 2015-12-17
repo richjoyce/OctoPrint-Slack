@@ -59,7 +59,6 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
         return 2
 
     def on_settings_migrate(self, target, current):
-        defaults = self.get_settings_defaults()
         if current is None or current == 1:
             events = self._settings.get(['events'])
             # migrate events
@@ -83,7 +82,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
     ## EventPlugin
 
     def on_event(self, event, payload):
-        events = self._settings.get(['print_events'])
+        events = self._settings.get(['print_events'], merged=True)
 
         if event in events and events[event] and events[event]['Enabled']:
 
@@ -126,11 +125,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             attachment['fields'].append( { "title": "Origin", "value": origin, "short": True } )
 
             ## event settings
-            event_item = events.get(event)
-            event_default = self.get_settings_defaults().get('print_events').get(event)
-            ## if no value is set, use the default settings
-            event_merged = event_default
-            event_merged.update({k:v for k,v in event_item.iteritems() if v})
+            event = self._settings.get(['print_events', event], merged=True)
 
             import datetime
             import octoprint.util
@@ -139,9 +134,9 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             else:
                 elapsed_time = ""
 
-            attachment['fallback'] = event_merged['Fallback'].format(**{'filename': filename, 'time':elapsed_time})
-            attachment['pretext'] = event_merged['Message']
-            attachment['color'] = event_merged['Color']
+            attachment['fallback'] = event['Fallback'].format(**{'filename': filename, 'time':elapsed_time})
+            attachment['pretext'] = event['Message']
+            attachment['color'] = event['Color']
 
             self._logger.debug("Attempting post of Slack message: {}".format(message))
             try:
