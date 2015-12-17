@@ -139,7 +139,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             else:
                 elapsed_time = ""
 
-            attachment['fallback'] = event_merged['Fallback'].format({'filename': filename, 'time':elapsed_time})
+            attachment['fallback'] = event_merged['Fallback'].format(**{'filename': filename, 'time':elapsed_time})
             attachment['pretext'] = event_merged['Message']
             attachment['color'] = event_merged['Color']
 
