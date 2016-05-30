@@ -37,7 +37,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
                     PrintDone=dict(
                         Enabled=True,
                         Message="Print finished successfully! :thumbsup:",
-                        Fallback="Print started! Filename: {filename}, Time: {time}",
+                        Fallback="Print finished! Filename: {filename}, Time: {time}",
                         Color="good",
                         ),
                     PrintPaused=dict(
@@ -141,6 +141,8 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             attachment['fallback'] = event['Fallback'].format(**{'filename': filename, 'time':elapsed_time})
             attachment['pretext'] = event['Message']
             attachment['color'] = event['Color']
+            if elapsed_time != "":
+                attachment['fields'].append( { "title": "Time", "value": elapsed_time, "short": True } )
 
             self._logger.debug("Attempting post of Slack message: {}".format(message))
             try:
