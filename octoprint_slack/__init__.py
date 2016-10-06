@@ -124,7 +124,7 @@ class SlackPlugin(octoprint.plugin.SettingsPlugin,
             ## if a channel is set, use that. if not, just don't send any
             bot_channel = self._settings.get(['bot_channel'])
             if bot_channel:
-                if bot_channel[0] != '#'
+                if bot_channel[0] != '#':
                     bot_channel = '#' + bot_channel
                 message['channel'] = bot_channel
 
