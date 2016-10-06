@@ -32,6 +32,13 @@
         </div>
     </div>
 
+    <div class="control-group" title="{{ _('Channel') }}">
+        <label class="control-label">{{ _('Channel Override') }}</label>
+        <div class="controls">
+            <input type="text" class="input-block-level" data-bind="value: settings.plugins.slack.bot_channel">
+        </div>
+    </div>
+
     <h4>{{ _('Event Notifications') }}</h4>
 
     <p>{{ _('Choose the events that send a message to Slack. You can also customize the message itself (or leave blank to use the default).') }}</p>
